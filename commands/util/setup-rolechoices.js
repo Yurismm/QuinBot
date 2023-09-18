@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 
 //roles
 const roles = {
@@ -15,6 +14,29 @@ module.exports = {
         .setName('rsetup')
         .setDescription('Sets up the role collection / role setter'),
     async execute(interaction) {
+        // Check if the command was used in a guild (server)
+        if (!interaction.guild) {
+            await interaction.reply('This command is only available in a server.');
+            return;
+        }
 
+        // Create role buttons
+        const buttons = Object.keys(roles).map((roleId) => ({
+            type: 1, // ButtonType.PRIMARY
+            style: 1, // ButtonStyle.PRIMARY
+            label: roles[roleId],
+            custom_id: roleId,
+        }));
+
+        // Send the self-role menu message with buttons
+        await interaction.reply({
+            content: 'Click a button to get or remove a role:',
+            components: [
+                {
+                    type: 1, // ComponentType.ACTION_ROW
+                    components: buttons,
+                },
+            ],
+        });
     },
 };
